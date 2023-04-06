@@ -14,17 +14,39 @@ class Node {
 */
 
 class Solution {
-    private HashMap<Node,Node> mp = new HashMap<>();
     public Node copyRandomList(Node head) {   
-        if(head == null)
-            return null;
-        if(mp.containsKey(head)){
-            return mp.get(head);
-        }
-        Node newhead = new Node(head.val);
-        mp.put(head,newhead);
-        newhead.next = copyRandomList(head.next);
-        newhead.random = copyRandomList(head.random);
-        return newhead;
+        Node iter = head; 
+        Node front = head;
+          // First round: make copy of each node,
+          // and link them together side-by-side in a single list.
+          while (iter != null) {
+            front = iter.next;
+            Node copy = new Node(iter.val);
+            iter.next = copy;
+            copy.next = front;
+            iter = front;
+          }
+          // Second round: assign random pointers for the copy nodes.
+          iter = head;
+          while (iter != null) {
+            if (iter.random != null) {
+              iter.next.random = iter.random.next;
+            }
+            iter = iter.next.next;
+          }
+          // Third round: restore the original list, and extract the copy list.
+          iter = head;
+          Node pseudoHead = new Node(0);
+          Node copy = pseudoHead;
+          while (iter != null) {
+            front = iter.next.next;
+            // extract the copy
+            copy.next = iter.next;
+            copy = copy.next;
+            // restore the original list
+            iter.next = front;
+            iter = front;
+          }
+          return pseudoHead.next;
     }
 }
