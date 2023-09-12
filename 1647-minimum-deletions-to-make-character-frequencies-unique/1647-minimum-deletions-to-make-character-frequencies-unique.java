@@ -1,19 +1,18 @@
 class Solution {
     public int minDeletions(String s) {
-        HashMap<Character,Integer> map = new HashMap<>();
-        int ans = 0;
-        HashSet<Integer> used_frequencies = new HashSet<>();
-        for(char c : s.toCharArray()){
-            map.put(c, map.getOrDefault(c, 0) + 1);
+        int[] charCount = new int[26];
+        for(char ch : s.toCharArray()){
+            charCount[ ch - 'a'] ++;
         }
-        for (int freq : map.values()) {
-            while (freq > 0 && used_frequencies.contains(freq)) {
-                freq--;
+        HashSet<Integer> set = new HashSet<>();
+        int ans = 0;
+        for(int val : charCount){
+            while(val !=0 && set.contains(val)){
+                val--;
                 ans++;
             }
-            used_frequencies.add(freq);
+            set.add(val);          
         }
-        
         return ans;
     }
 }
